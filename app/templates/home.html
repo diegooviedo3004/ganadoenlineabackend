@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="w-full py-12 md:py-24 lg:py-32">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col items-center justify-center space-y-4 text-center">
+                <h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                    Ganado en Linea
+                </h1>
+                <p class="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                    HomePage, lista de ganado, incluir y revisar con el equipo
+                </p>
+                <div class="space-x-4">
+                    <button class="inline-flex h-10 items-center justify-center rounded-md bg-blue-600 px-8 text-sm font-medium text-white">
+                        <a href="{% url 'create_post' %}">Crear publicación</a>
+                    </button>
+                    <button class="inline-flex h-10 items-center justify-center rounded-md border border-gray-300 px-8 text-sm font-medium">
+                        Saber más
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-16 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {% for animal in animales %}
+                <div class="rounded-lg border bg-white p-4 transition-all hover:shadow-lg">
+                    <h3 class="font-semibold">{{ animal.nombre }} - {{ animal.raza_principal }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ animal.rasgos_especiales|default:"Raza de alta calidad." }}
+                    </p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="text-sm">
+                            {% if animal.para_venta %}
+                                Disponible
+                            {% else %}
+                                No Disponible
+                            {% endif %}
+                        </span>
+                        <button class="inline-flex h-8 items-center justify-center rounded-md bg-blue-600 px-4 text-xs font-medium text-white">
+                            <a href="{% url 'detail_post' animal.id %}">Ver</a>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- <div class="rounded-lg border bg-white p-4 transition-all hover:shadow-lg">
+                    <h3 class="font-semibold">Ganado Brahman</h3>
+                    <p class="text-sm text-gray-600">Resistente y adaptable a climas cálidos.</p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="text-sm">Disponible</span>
+                        <button class="inline-flex h-8 items-center justify-center rounded-md bg-blue-600 px-4 text-xs font-medium text-white">
+                            Ver Perfil
+                        </button>
+                    </div>
+                </div> -->
+            </div>
+
+
+
+        </div>
+    </section>
+
+    {% endblock %}
