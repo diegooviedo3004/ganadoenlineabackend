@@ -1,53 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Animal
+from django.shortcuts import render
 
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 # Create your views here.
 def index(request):
-   # Obtener los 10 animales más recientes
-    animales_recientes = Animal.objects.filter(draft=False).order_by('-created_at')[:10]
-    
-    context = {
-        'animales': animales_recientes
-    }
-    
-    return render(request, 'home.html', context)
-    
-def detail_post(request, pk):
-   # Obtener los 10 animales más recientes
-    animal = get_object_or_404(Animal, pk=pk)
-    return render(request, 'detail_post.html', {'animal': animal})
+    return ""
 
-# @login_required
-# def profile(request):
-#     return render(request, 'profile.html')
 
-@login_required
-def profile(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+# Vista para listar y crear publicaciones
+from rest_framework import generics, permissions
+from .models import Post
+from .serializers import PostSerializer
 
-    context = {
-        'user': user,
-        'is_owner': request.user.id == user.id  # Check if the logged-in user is the profile owner
-    }
-    return render(request, 'profile.html', context)
+class PostListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Requiere autenticación
 
-from .forms import AnimalForm
+    def perform_create(self, serializer):
+        # Asigna automáticamente el usuario autenticado al campo 'user' del Post
+        serializer.save(user=self.request.user)
 
-@login_required
-def create_post(request):
-    if request.method == 'POST':
-        form = AnimalForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Asignar el vendedor como el usuario que está realizando el submit
-            publicacion = form.save(commit=False)
-            publicacion.vendedor = request.user  # Establece el vendedor como el usuario actual
-            publicacion.save()
-            return redirect('home')  # Cambia esto a tu URL deseada
-    else:
-        form = AnimalForm()
-    
-    return render(request, 'create_post.html', {'form': form})
+
+# Vista para obtener, actualizar, o eliminar una publicación
+class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer

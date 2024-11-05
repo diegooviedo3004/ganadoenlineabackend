@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2__rr$t8zut8+my&#whf^r%q1&5zt)3qpqp&xd&!qw%9apk+*9'
+SECRET_KEY = 'django-insecure-utj!0*lmex_gb4#0c=*bu_dsv_!lc6uh=2$!gt#830fj*9m8sr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,18 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django.contrib.humanize',
+    'rest_framework',
+    'djoser',
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
-
-
-
-    'crispy_forms',
-    "crispy_tailwind",
     'app'
 ]
 
@@ -60,12 +51,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-
-    'django.middleware.locale.LocaleMiddleware',
-
-    "allauth.account.middleware.AccountMiddleware",
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -81,7 +67,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
             ],
         },
     },
@@ -142,25 +127,29 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# All-auth config
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
-AUTHENTICATION_BACKENDS = [
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('Bearer',),
+   'LOGIN_FIELD': 'email'
+}
 
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
+DJOSER = {
+     'LOGIN_FIELD': 'email',
+     'USER_CREATE_PASSWORD_RETYPE': True,      
+     'USERNAME_CHANGED_EMAIL_CONFIRMATION': False,
+     'SEND_ACTIVATION_EMAIL': False,
+}
 
-    # `allauth` specific authentication methods, such as login by email
-    'allauth.account.auth_backends.AuthenticationBackend',
+SEND_ACTIVATION_EMAIL = False
+SEND_CONFIRMATION_EMAIL = False
+LOGIN_FIELD = 'email'
 
-]
-
-
-ACCOUNT_EMAIL_VERIFICATION  = 'none'
-
-LOGIN_REDIRECT_URL = 'home'
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-
-CRISPY_TEMPLATE_PACK = "tailwind"
+AUTH_USER_MODEL = 'app.User'
