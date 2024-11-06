@@ -1,26 +1,28 @@
-from django.shortcuts import render
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-# Create your views here.
-def index(request):
-    return ""
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def index(request, format=None):
+    content = {
+        'status': 'request was permitted'
+    }
+    return Response(content)
 
 # Vista para listar y crear publicaciones
-from rest_framework import generics, permissions
+
+from rest_framework.viewsets import ModelViewSet
 from .models import Post
 from .serializers import PostSerializer
 
-class PostListCreateAPIView(generics.ListCreateAPIView):
+class PostViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Requiere autenticación
 
-    def perform_create(self, serializer):
-        # Asigna automáticamente el usuario autenticado al campo 'user' del Post
-        serializer.save(user=self.request.user)
+from django.shortcuts import render
 
-
-# Vista para obtener, actualizar, o eliminar una publicación
-class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+def test(request):
+    return render(request, 'test.html')

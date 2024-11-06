@@ -7,26 +7,40 @@ class PostImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
 
 class PostSerializer(serializers.ModelSerializer):
-    images = PostImageSerializer(many=True, required=False)
+    images = serializers.SerializerMethodField()  # Use SerializerMethodField to fetch images
 
     class Meta:
         model = Post
         fields = '__all__'
+        read_only_fields = ['user']  # Ensures 'user' is read-only
+
+    def get_images(self, instance):
+        # This method retrieves related images and serializes them
+        images = instance.images.all()
+        return PostImageSerializer(images, many=True).data
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images', [])
-        post = Post.objects.create(**validated_data)
-        for image_data in images_data:
-            PostImage.objects.create(post=post, **image_data)
+        images_data = self.context['request'].FILES.getlist('images')  # Fetch images from request files
+        post = Post.objects.create(user=self.context['request'].user, **validated_data)
+
+        # Create related PostImage objects if images are provided
+        for image in images_data:
+            PostImage.objects.create(post=post, image=image)
+            
         return post
 
     def update(self, instance, validated_data):
-        images_data = validated_data.pop('images', None)
+        images_data = self.context['request'].FILES.getlist('images')  # Fetch images from request files
+
+        # Update post fields
         instance = super().update(instance, validated_data)
 
-        if images_data is not None:
-            instance.images.all().delete()  # Elimina imágenes anteriores
-            for image_data in images_data:
-                PostImage.objects.create(post=instance, **image_data)
+        # Update images if new ones are provided
+        if images_data:
+            # Delete old images
+            instance.images.all().delete()
+            # Add new images
+            for image in images_data:
+                PostImage.objects.create(post=instance, image=image)
 
         return instance

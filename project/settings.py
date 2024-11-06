@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-utj!0*lmex_gb4#0c=*bu_dsv_!lc6uh=2$!gt#830fj*9m8sr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -153,3 +153,9 @@ SEND_CONFIRMATION_EMAIL = False
 LOGIN_FIELD = 'email'
 
 AUTH_USER_MODEL = 'app.User'
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=360),
+}
