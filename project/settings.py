@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-utj!0*lmex_gb4#0c=*bu_dsv_!lc6uh=2$!gt#830fj*9m8sr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.100.8"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'app',
     'chat',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +163,6 @@ SEND_CONFIRMATION_EMAIL = False
 LOGIN_FIELD = 'email'
 
 AUTH_USER_MODEL = 'app.User'
+
+LOGIN_REDIRECT_URL = 'profile'
+LOGOUT_REDIRECT_URL = 'login'

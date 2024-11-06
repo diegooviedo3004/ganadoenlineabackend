@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi Proyecto{% endblock %}</title>
+</head>
+<style>
+    body {
+        background-color: #121212; 
+        color: #ffffff; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh; 
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    
+    .container {
+        max-width: 800px;
+        padding: 20px;
+        background-color: #1e1e1e; 
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    }
+    
+    
+    a {
+        color: #bb86fc; 
+    }
+    
+    a:hover {
+        color: #ffffff;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}">Perfil</a></li>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button>Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'signup' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
