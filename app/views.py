@@ -22,7 +22,3 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-from django.shortcuts import render
-
-def test(request):
-    return render(request, 'test.html')
