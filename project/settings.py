@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-utj!0*lmex_gb4#0c=*bu_dsv_!lc6uh=2$!gt#830fj*9m8sr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.100.4"]
+ALLOWED_HOSTS = ["192.168.100.8"]
 
 
 # Application definition
@@ -143,8 +144,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('Bearer',),
-   'LOGIN_FIELD': 'email'
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(weeks=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(weeks=1),
+    'LOGIN_FIELD': 'email'
 }
 
 DJOSER = {

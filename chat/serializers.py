@@ -16,24 +16,31 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     other_user = serializers.SerializerMethodField()
+    other_user_id = serializers.SerializerMethodField()
     last_message = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ['id', 'other_user', 'last_message']
+        fields = ['id', 'other_user', 'other_user_id', 'last_message']
 
     def get_other_user(self, obj):
         request_user = self.context['request'].user
         other_user = obj.users.exclude(id=request_user.id).first()
         return other_user.get_full_name() if other_user else None
 
+    def get_other_user_id(self, obj):
+        request_user = self.context['request'].user
+        other_user = obj.users.exclude(id=request_user.id).first()
+        return other_user.id if other_user else None
+
     def get_last_message(self, obj):
         last_message = obj.messages.order_by('-timestamp').first()
-        return MessageSerializer(last_message).data if last_message else None
+        return MessageSerializer(last_message).data if last_message else ""
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         return data
+    
 
 
 class ConversationDetailSerializer(serializers.ModelSerializer):
@@ -47,4 +54,6 @@ class ConversationDetailSerializer(serializers.ModelSerializer):
     def get_other_user(self, obj):
         request_user = self.context['request'].user
         other_user = obj.users.exclude(id=request_user.id).first()
-        return other_user.get_full_name() if other_user else None
+        return other_user.get_full_name() if other_user else ""
+    
+    

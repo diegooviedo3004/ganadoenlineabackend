@@ -19,7 +19,7 @@ idna = "==3.10"
 oauthlib = "==3.2.2"
 pillow = "==11.0.0"
 pycparser = "==2.22"
-pyjwt = "==2.9.0"
+pyjwt = "*"
 python3-openid = "==3.2.0"
 requests = "==2.32.3"
 requests-oauthlib = "==2.0.0"
@@ -32,6 +32,7 @@ urllib3 = "==2.2.3"
 python-socketio = {extras = ["asyncio"], version = "*"}
 daphne = "*"
 django-cors-headers = "*"
+channels = "*"
 
 [dev-packages]
 
